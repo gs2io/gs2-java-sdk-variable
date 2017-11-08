@@ -1,54 +1,72 @@
+/*
+ * Copyright 2016 Game Server Services, Inc. or its affiliates. All Rights
+ * Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * You may not use this file except in compliance with the License.
+ * A copy of the License is located at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * or in the "license" file accompanying this file. This file is distributed
+ * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing
+ * permissions and limitations under the License.
+ */
+
 package io.gs2.variable.control;
 
+import org.json.JSONObject;
+import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
- * 変数の取得結果。
- * 
  * @author Game Server Services, Inc.
- *
  */
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class GetVariableResult {
-	
+
+	/** 有効期限(エポック秒) */
+	private Integer expire;
+
 	/** 値 */
-	String value;
-	/** 値の有効期限 */
-	Long expire;
-	
+	private String value;
+
+
 	/**
-	 * 値を取得します。
-	 * 
+	 * 有効期限(エポック秒)を取得
+	 *
+	 * @return 有効期限(エポック秒)
+	 */
+	public Integer getExpire() {
+		return expire;
+	}
+
+	/**
+	 * 有効期限(エポック秒)を設定
+	 *
+	 * @param expire 有効期限(エポック秒)
+	 */
+	public void setExpire(Integer expire) {
+		this.expire = expire;
+	}
+
+	/**
+	 * 値を取得
+	 *
 	 * @return 値
 	 */
 	public String getValue() {
 		return value;
 	}
-	
+
 	/**
-	 * 値を設定します。
-	 * 
+	 * 値を設定
+	 *
 	 * @param value 値
 	 */
 	public void setValue(String value) {
 		this.value = value;
 	}
-	
-	/**
-	 * 値の有効期限を取得します。
-	 * 
-	 * @return 値の有効期限
-	 */
-	public Long getExpire() {
-		return expire;
-	}
-	
-	/**
-	 * 値の有効期限を設定します。
-	 * 
-	 * @param expire 値の有効期限
-	 */
-	public void setExpire(Long expire) {
-		this.expire = expire;
-	}
+
 }

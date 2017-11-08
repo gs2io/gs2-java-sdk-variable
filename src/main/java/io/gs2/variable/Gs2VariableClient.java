@@ -1,8 +1,32 @@
+/*
+ * Copyright 2016 Game Server Services, Inc. or its affiliates. All Rights
+ * Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * You may not use this file except in compliance with the License.
+ * A copy of the License is located at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * or in the "license" file accompanying this file. This file is distributed
+ * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing
+ * permissions and limitations under the License.
+ */
+
 package io.gs2.variable;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import io.gs2.util.EncodingUtil;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.message.BasicNameValuePair;
 
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -10,145 +34,191 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.gs2.AbstractGs2Client;
 import io.gs2.Gs2Constant;
 import io.gs2.model.IGs2Credential;
-import io.gs2.variable.control.DeleteMyVariableRequest;
-import io.gs2.variable.control.DeleteVariableRequest;
-import io.gs2.variable.control.GetMyVariableRequest;
-import io.gs2.variable.control.GetMyVariableResult;
-import io.gs2.variable.control.GetVariableRequest;
-import io.gs2.variable.control.GetVariableResult;
-import io.gs2.variable.control.SetMyVariableRequest;
-import io.gs2.variable.control.SetMyVariableResult;
-import io.gs2.variable.control.SetVariableRequest;
-import io.gs2.variable.control.SetVariableResult;
+import io.gs2.variable.control.*;
 
 /**
  * GS2 Variable API クライアント
- * 
+ *
  * @author Game Server Services, Inc.
  *
  */
 public class Gs2VariableClient extends AbstractGs2Client<Gs2VariableClient> {
 
 	public static String ENDPOINT = "variable";
-	
+
 	/**
 	 * コンストラクタ。
-	 * 
+	 *
 	 * @param credential 認証情報
 	 */
 	public Gs2VariableClient(IGs2Credential credential) {
 		super(credential);
 	}
 
-	/**
-	 * 変数に値を設定。
-	 * 
-	 * @param request リクエストパラメータ
-	 * @return 設定結果
-	 */
-	public SetVariableResult setVariable(SetVariableRequest request) {
-		if(request.getUserId() == null || request.getVariableName() == null) throw new NullPointerException();
-		ObjectNode body = JsonNodeFactory.instance.objectNode()
-				.put("value", request.getValue())
-				.put("ttl", String.valueOf(request.getTtl()));
-		HttpPut put = createHttpPut(
-				Gs2Constant.ENDPOINT_HOST + "/user/" + request.getUserId() + "/variable/" + request.getVariableName(), 
-				credential, 
-				ENDPOINT,
-				SetVariableRequest.Constant.MODULE, 
-				SetVariableRequest.Constant.FUNCTION,
-				body.toString());
-		return doRequest(put, SetVariableResult.class);
-	}
 
 	/**
-	 * 変数を取得。
-	 * 
+	 * 変数を削除する<br>
+	 * <br>
+	 *
 	 * @param request リクエストパラメータ
-	 * @return 変数の値
 	 */
-	public GetVariableResult getVariable(GetVariableRequest request) {
-		if(request.getUserId() == null || request.getVariableName() == null) throw new NullPointerException();
-		HttpGet get = createHttpGet(
-				Gs2Constant.ENDPOINT_HOST + "/user/" + request.getUserId() + "/variable/" + request.getVariableName(), 
-				credential, 
-				ENDPOINT,
-				GetVariableRequest.Constant.MODULE, 
-				GetVariableRequest.Constant.FUNCTION);
-		return doRequest(get, GetVariableResult.class);
-	}
 
-	/**
-	 * 変数を削除。
-	 * 
-	 * @param request リクエストパラメータ
-	 */
-	public void deleteVariable(DeleteVariableRequest request) {
-		if(request.getUserId() == null || request.getVariableName() == null) throw new NullPointerException();
+	public void deleteMyVariable(DeleteMyVariableRequest request) {
+
+	    String url = Gs2Constant.ENDPOINT_HOST + "/variable/" + (request.getVariableName() == null ? "null" : request.getVariableName()) + "";
+
+
+
 		HttpDelete delete = createHttpDelete(
-				Gs2Constant.ENDPOINT_HOST + "/user/" + request.getUserId() + "/variable/" + request.getVariableName(), 
-				credential, 
+				url,
+				credential,
 				ENDPOINT,
-				DeleteVariableRequest.Constant.MODULE, 
-				DeleteVariableRequest.Constant.FUNCTION);
+				DeleteMyVariableRequest.Constant.MODULE,
+				DeleteMyVariableRequest.Constant.FUNCTION);
+
+        delete.setHeader("X-GS2-ACCESS-TOKEN", request.getAccessToken());
+
 		doRequest(delete, null);
+
 	}
 
+
 	/**
-	 * 変数に値を設定。
-	 * 
+	 * 変数を削除する<br>
+	 * <br>
+	 *
 	 * @param request リクエストパラメータ
-	 * @return 設定結果
 	 */
+
+	public void deleteVariable(DeleteVariableRequest request) {
+
+	    String url = Gs2Constant.ENDPOINT_HOST + "/user/" + (request.getUserId() == null ? "null" : request.getUserId()) + "/variable/" + (request.getVariableName() == null ? "null" : request.getVariableName()) + "";
+
+
+
+		HttpDelete delete = createHttpDelete(
+				url,
+				credential,
+				ENDPOINT,
+				DeleteVariableRequest.Constant.MODULE,
+				DeleteVariableRequest.Constant.FUNCTION);
+
+
+		doRequest(delete, null);
+
+	}
+
+
+	/**
+	 * 変数を取得します<br>
+	 * <br>
+	 *
+	 * @param request リクエストパラメータ
+	 * @return 結果
+	 */
+
+	public GetMyVariableResult getMyVariable(GetMyVariableRequest request) {
+
+	    String url = Gs2Constant.ENDPOINT_HOST + "/variable/" + (request.getVariableName() == null ? "null" : request.getVariableName()) + "";
+
+
+
+		HttpGet get = createHttpGet(
+				url,
+				credential,
+				ENDPOINT,
+				GetMyVariableRequest.Constant.MODULE,
+				GetMyVariableRequest.Constant.FUNCTION);
+
+        get.setHeader("X-GS2-ACCESS-TOKEN", request.getAccessToken());
+
+		return doRequest(get, GetMyVariableResult.class);
+
+	}
+
+
+	/**
+	 * 変数を取得します<br>
+	 * <br>
+	 *
+	 * @param request リクエストパラメータ
+	 * @return 結果
+	 */
+
+	public GetVariableResult getVariable(GetVariableRequest request) {
+
+	    String url = Gs2Constant.ENDPOINT_HOST + "/user/" + (request.getUserId() == null ? "null" : request.getUserId()) + "/variable/" + (request.getVariableName() == null ? "null" : request.getVariableName()) + "";
+
+
+
+		HttpGet get = createHttpGet(
+				url,
+				credential,
+				ENDPOINT,
+				GetVariableRequest.Constant.MODULE,
+				GetVariableRequest.Constant.FUNCTION);
+
+
+		return doRequest(get, GetVariableResult.class);
+
+	}
+
+
+	/**
+	 * 変数を格納する<br>
+	 * <br>
+	 *
+	 * @param request リクエストパラメータ
+	 * @return 結果
+	 */
+
 	public SetMyVariableResult setMyVariable(SetMyVariableRequest request) {
-		if(request.getVariableName() == null) throw new NullPointerException();
+
 		ObjectNode body = JsonNodeFactory.instance.objectNode()
 				.put("value", request.getValue())
-				.put("ttl", String.valueOf(request.getTtl()));
+				.put("ttl", request.getTtl());
+
 		HttpPut put = createHttpPut(
-				Gs2Constant.ENDPOINT_HOST + "/variable/" + request.getVariableName(), 
-				credential, 
+				Gs2Constant.ENDPOINT_HOST + "/variable/" + (request.getVariableName() == null ? "null" : request.getVariableName()) + "",
+				credential,
 				ENDPOINT,
-				SetMyVariableRequest.Constant.MODULE, 
+				SetMyVariableRequest.Constant.MODULE,
 				SetMyVariableRequest.Constant.FUNCTION,
 				body.toString());
-		put.setHeader("X-GS2-ACCESS-TOKEN", request.getAccessToken());
+
+        put.setHeader("X-GS2-ACCESS-TOKEN", request.getAccessToken());
+
 		return doRequest(put, SetMyVariableResult.class);
+
 	}
 
-	/**
-	 * 変数を取得。
-	 * 
-	 * @param request リクエストパラメータ
-	 * @return 変数の値
-	 */
-	public GetMyVariableResult getMyVariable(GetMyVariableRequest request) {
-		if(request.getVariableName() == null) throw new NullPointerException();
-		HttpGet get = createHttpGet(
-				Gs2Constant.ENDPOINT_HOST + "/variable/" + request.getVariableName(), 
-				credential, 
-				ENDPOINT,
-				GetMyVariableRequest.Constant.MODULE, 
-				GetMyVariableRequest.Constant.FUNCTION);
-		get.setHeader("X-GS2-ACCESS-TOKEN", request.getAccessToken());
-		return doRequest(get, GetMyVariableResult.class);
-	}
 
 	/**
-	 * 変数を削除。
-	 * 
+	 * 変数を格納する<br>
+	 * <br>
+	 *
 	 * @param request リクエストパラメータ
+	 * @return 結果
 	 */
-	public void deleteMyVariable(DeleteMyVariableRequest request) {
-		if(request.getVariableName() == null) throw new NullPointerException();
-		HttpDelete delete = createHttpDelete(
-				Gs2Constant.ENDPOINT_HOST + "/variable/" + request.getVariableName(), 
-				credential, 
+
+	public SetVariableResult setVariable(SetVariableRequest request) {
+
+		ObjectNode body = JsonNodeFactory.instance.objectNode()
+				.put("value", request.getValue())
+				.put("ttl", request.getTtl());
+
+		HttpPut put = createHttpPut(
+				Gs2Constant.ENDPOINT_HOST + "/user/" + (request.getUserId() == null ? "null" : request.getUserId()) + "/variable/" + (request.getVariableName() == null ? "null" : request.getVariableName()) + "",
+				credential,
 				ENDPOINT,
-				DeleteMyVariableRequest.Constant.MODULE, 
-				DeleteMyVariableRequest.Constant.FUNCTION);
-		delete.setHeader("X-GS2-ACCESS-TOKEN", request.getAccessToken());
-		doRequest(delete, null);
+				SetVariableRequest.Constant.MODULE,
+				SetVariableRequest.Constant.FUNCTION,
+				body.toString());
+
+
+		return doRequest(put, SetVariableResult.class);
+
 	}
+
 
 }
