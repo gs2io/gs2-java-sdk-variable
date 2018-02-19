@@ -61,11 +61,12 @@ public class Gs2VariableClient extends AbstractGs2Client<Gs2VariableClient> {
 	 * <br>
 	 *
 	 * @param request リクエストパラメータ
+
 	 */
 
 	public void deleteMyVariable(DeleteMyVariableRequest request) {
 
-	    String url = Gs2Constant.ENDPOINT_HOST + "/variable/" + (request.getVariableName() == null ? "null" : request.getVariableName()) + "";
+	    String url = Gs2Constant.ENDPOINT_HOST + "/variable/" + (request.getVariableName() == null || request.getVariableName().equals("") ? "null" : request.getVariableName()) + "";
 
 
 
@@ -75,6 +76,9 @@ public class Gs2VariableClient extends AbstractGs2Client<Gs2VariableClient> {
 				ENDPOINT,
 				DeleteMyVariableRequest.Constant.MODULE,
 				DeleteMyVariableRequest.Constant.FUNCTION);
+        if(request.getRequestId() != null) {
+            delete.setHeader("X-GS2-REQUEST-ID", request.getRequestId());
+        }
 
         delete.setHeader("X-GS2-ACCESS-TOKEN", request.getAccessToken());
 
@@ -88,11 +92,12 @@ public class Gs2VariableClient extends AbstractGs2Client<Gs2VariableClient> {
 	 * <br>
 	 *
 	 * @param request リクエストパラメータ
+
 	 */
 
 	public void deleteVariable(DeleteVariableRequest request) {
 
-	    String url = Gs2Constant.ENDPOINT_HOST + "/user/" + (request.getUserId() == null ? "null" : request.getUserId()) + "/variable/" + (request.getVariableName() == null ? "null" : request.getVariableName()) + "";
+	    String url = Gs2Constant.ENDPOINT_HOST + "/user/" + (request.getUserId() == null || request.getUserId().equals("") ? "null" : request.getUserId()) + "/variable/" + (request.getVariableName() == null || request.getVariableName().equals("") ? "null" : request.getVariableName()) + "";
 
 
 
@@ -102,6 +107,9 @@ public class Gs2VariableClient extends AbstractGs2Client<Gs2VariableClient> {
 				ENDPOINT,
 				DeleteVariableRequest.Constant.MODULE,
 				DeleteVariableRequest.Constant.FUNCTION);
+        if(request.getRequestId() != null) {
+            delete.setHeader("X-GS2-REQUEST-ID", request.getRequestId());
+        }
 
 
 		doRequest(delete, null);
@@ -114,12 +122,14 @@ public class Gs2VariableClient extends AbstractGs2Client<Gs2VariableClient> {
 	 * <br>
 	 *
 	 * @param request リクエストパラメータ
+
 	 * @return 結果
+
 	 */
 
 	public GetMyVariableResult getMyVariable(GetMyVariableRequest request) {
 
-	    String url = Gs2Constant.ENDPOINT_HOST + "/variable/" + (request.getVariableName() == null ? "null" : request.getVariableName()) + "";
+	    String url = Gs2Constant.ENDPOINT_HOST + "/variable/" + (request.getVariableName() == null || request.getVariableName().equals("") ? "null" : request.getVariableName()) + "";
 
 
 
@@ -129,6 +139,9 @@ public class Gs2VariableClient extends AbstractGs2Client<Gs2VariableClient> {
 				ENDPOINT,
 				GetMyVariableRequest.Constant.MODULE,
 				GetMyVariableRequest.Constant.FUNCTION);
+        if(request.getRequestId() != null) {
+            get.setHeader("X-GS2-REQUEST-ID", request.getRequestId());
+        }
 
         get.setHeader("X-GS2-ACCESS-TOKEN", request.getAccessToken());
 
@@ -142,12 +155,14 @@ public class Gs2VariableClient extends AbstractGs2Client<Gs2VariableClient> {
 	 * <br>
 	 *
 	 * @param request リクエストパラメータ
+
 	 * @return 結果
+
 	 */
 
 	public GetVariableResult getVariable(GetVariableRequest request) {
 
-	    String url = Gs2Constant.ENDPOINT_HOST + "/user/" + (request.getUserId() == null ? "null" : request.getUserId()) + "/variable/" + (request.getVariableName() == null ? "null" : request.getVariableName()) + "";
+	    String url = Gs2Constant.ENDPOINT_HOST + "/user/" + (request.getUserId() == null || request.getUserId().equals("") ? "null" : request.getUserId()) + "/variable/" + (request.getVariableName() == null || request.getVariableName().equals("") ? "null" : request.getVariableName()) + "";
 
 
 
@@ -157,6 +172,9 @@ public class Gs2VariableClient extends AbstractGs2Client<Gs2VariableClient> {
 				ENDPOINT,
 				GetVariableRequest.Constant.MODULE,
 				GetVariableRequest.Constant.FUNCTION);
+        if(request.getRequestId() != null) {
+            get.setHeader("X-GS2-REQUEST-ID", request.getRequestId());
+        }
 
 
 		return doRequest(get, GetVariableResult.class);
@@ -169,7 +187,9 @@ public class Gs2VariableClient extends AbstractGs2Client<Gs2VariableClient> {
 	 * <br>
 	 *
 	 * @param request リクエストパラメータ
+
 	 * @return 結果
+
 	 */
 
 	public SetMyVariableResult setMyVariable(SetMyVariableRequest request) {
@@ -179,12 +199,15 @@ public class Gs2VariableClient extends AbstractGs2Client<Gs2VariableClient> {
 				.put("ttl", request.getTtl());
 
 		HttpPut put = createHttpPut(
-				Gs2Constant.ENDPOINT_HOST + "/variable/" + (request.getVariableName() == null ? "null" : request.getVariableName()) + "",
+				Gs2Constant.ENDPOINT_HOST + "/variable/" + (request.getVariableName() == null || request.getVariableName().equals("") ? "null" : request.getVariableName()) + "",
 				credential,
 				ENDPOINT,
 				SetMyVariableRequest.Constant.MODULE,
 				SetMyVariableRequest.Constant.FUNCTION,
 				body.toString());
+        if(request.getRequestId() != null) {
+            put.setHeader("X-GS2-REQUEST-ID", request.getRequestId());
+        }
 
         put.setHeader("X-GS2-ACCESS-TOKEN", request.getAccessToken());
 
@@ -198,7 +221,9 @@ public class Gs2VariableClient extends AbstractGs2Client<Gs2VariableClient> {
 	 * <br>
 	 *
 	 * @param request リクエストパラメータ
+
 	 * @return 結果
+
 	 */
 
 	public SetVariableResult setVariable(SetVariableRequest request) {
@@ -208,12 +233,15 @@ public class Gs2VariableClient extends AbstractGs2Client<Gs2VariableClient> {
 				.put("ttl", request.getTtl());
 
 		HttpPut put = createHttpPut(
-				Gs2Constant.ENDPOINT_HOST + "/user/" + (request.getUserId() == null ? "null" : request.getUserId()) + "/variable/" + (request.getVariableName() == null ? "null" : request.getVariableName()) + "",
+				Gs2Constant.ENDPOINT_HOST + "/user/" + (request.getUserId() == null || request.getUserId().equals("") ? "null" : request.getUserId()) + "/variable/" + (request.getVariableName() == null || request.getVariableName().equals("") ? "null" : request.getVariableName()) + "",
 				credential,
 				ENDPOINT,
 				SetVariableRequest.Constant.MODULE,
 				SetVariableRequest.Constant.FUNCTION,
 				body.toString());
+        if(request.getRequestId() != null) {
+            put.setHeader("X-GS2-REQUEST-ID", request.getRequestId());
+        }
 
 
 		return doRequest(put, SetVariableResult.class);
