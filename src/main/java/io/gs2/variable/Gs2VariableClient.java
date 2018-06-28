@@ -18,7 +18,9 @@ package io.gs2.variable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import io.gs2.model.Region;
 import io.gs2.util.EncodingUtil;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.HttpDelete;
@@ -53,6 +55,26 @@ public class Gs2VariableClient extends AbstractGs2Client<Gs2VariableClient> {
 	 */
 	public Gs2VariableClient(IGs2Credential credential) {
 		super(credential);
+	}
+
+	/**
+	 * コンストラクタ。
+	 *
+	 * @param credential 認証情報
+	 * @param region リージョン
+	 */
+	public Gs2VariableClient(IGs2Credential credential, Region region) {
+		super(credential, region);
+	}
+
+	/**
+	 * コンストラクタ。
+	 *
+	 * @param credential 認証情報
+	 * @param region リージョン
+	 */
+	public Gs2VariableClient(IGs2Credential credential, String region) {
+		super(credential, region);
 	}
 
 
@@ -197,7 +219,6 @@ public class Gs2VariableClient extends AbstractGs2Client<Gs2VariableClient> {
 		ObjectNode body = JsonNodeFactory.instance.objectNode()
 				.put("value", request.getValue())
 				.put("ttl", request.getTtl());
-
 		HttpPut put = createHttpPut(
 				Gs2Constant.ENDPOINT_HOST + "/variable/" + (request.getVariableName() == null || request.getVariableName().equals("") ? "null" : request.getVariableName()) + "",
 				credential,
@@ -231,7 +252,6 @@ public class Gs2VariableClient extends AbstractGs2Client<Gs2VariableClient> {
 		ObjectNode body = JsonNodeFactory.instance.objectNode()
 				.put("value", request.getValue())
 				.put("ttl", request.getTtl());
-
 		HttpPut put = createHttpPut(
 				Gs2Constant.ENDPOINT_HOST + "/user/" + (request.getUserId() == null || request.getUserId().equals("") ? "null" : request.getUserId()) + "/variable/" + (request.getVariableName() == null || request.getVariableName().equals("") ? "null" : request.getVariableName()) + "",
 				credential,

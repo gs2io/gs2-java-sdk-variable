@@ -19,6 +19,7 @@ package io.gs2.variable.control;
 import org.json.JSONObject;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.gs2.variable.model.*;
 
 /**
  * @author Game Server Services, Inc.
@@ -26,30 +27,12 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class SetVariableResult {
 
-	/** 有効期限(エポック秒) */
-	private Integer expire;
-
 	/** 値 */
 	private String value;
 
+	/** 有効期限(エポック秒) */
+	private Integer expire;
 
-	/**
-	 * 有効期限(エポック秒)を取得
-	 *
-	 * @return 有効期限(エポック秒)
-	 */
-	public Integer getExpire() {
-		return expire;
-	}
-
-	/**
-	 * 有効期限(エポック秒)を設定
-	 *
-	 * @param expire 有効期限(エポック秒)
-	 */
-	public void setExpire(Integer expire) {
-		this.expire = expire;
-	}
 
 	/**
 	 * 値を取得
@@ -67,6 +50,24 @@ public class SetVariableResult {
 	 */
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	/**
+	 * 有効期限(エポック秒)を取得
+	 *
+	 * @return 有効期限(エポック秒)
+	 */
+	public Integer getExpire() {
+		return expire;
+	}
+
+	/**
+	 * 有効期限(エポック秒)を設定
+	 *
+	 * @param expire 有効期限(エポック秒)
+	 */
+	public void setExpire(Integer expire) {
+		this.expire = expire;
 	}
 
 }
